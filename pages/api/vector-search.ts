@@ -55,15 +55,16 @@ export default async function handler(req: NextRequest) {
       }),
     }).then((res) => res.json())
 
+    console.log(moderationResponse)
     const [results] = moderationResponse.results
-
+   
     if (results.flagged) {
       throw new UserError('Flagged content', {
         flagged: true,
         categories: results.categories,
       })
     }
-
+    
     const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
@@ -94,6 +95,7 @@ export default async function handler(req: NextRequest) {
       }
     )
 
+
     if (matchError) {
       throw new ApplicationError('Failed to match page sections', matchError)
     }
@@ -117,10 +119,10 @@ export default async function handler(req: NextRequest) {
 
     const prompt = codeBlock`
       ${oneLine`
-        You are a very enthusiastic Supabase representative who loves
-        to help people! Given the following sections from the Supabase
-        documentation, answer the question using only that information,
-        outputted in markdown format. If you are unsure and the answer
+        You are a very enthusiastic curly hair expert who loves
+        to help people! Given the following sections,
+        answer the question using only that information,
+        outputted in markdown format. Always rewrite the content when answering. If you are unsure and the answer
         is not explicitly written in the documentation, say
         "Sorry, I don't know how to help with that."
       `}
@@ -132,14 +134,14 @@ export default async function handler(req: NextRequest) {
       ${sanitizedQuery}
       """
 
-      Answer as markdown (including related code snippets if available):
+      Answer as markdown:
     `
 
     const completionOptions: CreateCompletionRequest = {
       model: 'text-davinci-003',
       prompt,
       max_tokens: 512,
-      temperature: 0,
+      temperature: 0.75,
       stream: true,
     }
 

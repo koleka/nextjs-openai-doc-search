@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { SSE } from 'sse.js'
 import type { CreateCompletionResponse } from 'openai'
 import { X, Loader, User, Frown, CornerDownLeft, Search, Wand } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 
 function promptDataReducer(
   state: any[],
@@ -241,7 +242,7 @@ export function SearchDialog() {
                     <Wand width={18} className="text-white" />
                   </span>
                   <h3 className="font-semibold">Answer:</h3>
-                  {answer}
+                  <ReactMarkdown>{answer}</ReactMarkdown>
                 </div>
               ) : null}
 
