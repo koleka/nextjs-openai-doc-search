@@ -140,7 +140,7 @@ export default async function handler(req: NextRequest) {
     const completionOptions: CreateCompletionRequest = {
       model: 'text-davinci-003',
       prompt,
-      max_tokens: 512,
+      max_tokens: 1024,
       temperature: 0.75,
       stream: true,
     }
