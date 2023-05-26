@@ -55,7 +55,7 @@ export default async function handler(req: NextRequest) {
       }),
     }).then((res) => res.json())
 
-    console.log(moderationResponse)
+    //console.log(moderationResponse)
     const [results] = moderationResponse.results
    
     if (results.flagged) {
@@ -64,7 +64,42 @@ export default async function handler(req: NextRequest) {
         categories: results.categories,
       })
     }
+
+    const extractQuestionPrompt = codeBlock`
+    ${oneLine`
+      Extract  a sentence stating the Question from the user input:
+    `}
+
+    user input: """
+    ${sanitizedQuery}
+    """
+  `
+    const extractQuestionCompletionOptions = {
+      model: 'text-davinci-003',
+      prompt: extractQuestionPrompt,
+      max_tokens: 256,
+      temperature: 0.75,
+      stream: false,
+    }
+
+    const extractedQuestion = await fetch('https://api.openai.com/v1/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${openAiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(extractQuestionCompletionOptions),
+    })
+
+    if (!extractedQuestion.ok) {
+      const error = await extractedQuestion.json()
+      throw new ApplicationError('Failed to generate question from users input', error)
+    }
+
+    const data = await extractedQuestion.json()
+    const question = data.choices[0].text
     
+    console.log(question)
     const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
@@ -73,7 +108,7 @@ export default async function handler(req: NextRequest) {
       },
       body: JSON.stringify({
         model: 'text-embedding-ada-002',
-        input: sanitizedQuery.replaceAll('\n', ' '),
+        input: question.replaceAll('\n', ' '),
       }),
     })
 
