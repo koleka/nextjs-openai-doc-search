@@ -273,7 +273,7 @@ export function SearchDialog() {
                     setSearch('Create a table called profiles with fields id, name, email')
                   }
                 >
-                  Create a table called profiles with fields id, name, email
+                  Suggested questions coming soon
                 </button>
               </div>
             </div>
