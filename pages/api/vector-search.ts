@@ -67,7 +67,7 @@ export default async function handler(req: NextRequest) {
 
     const extractQuestionPrompt = codeBlock`
     ${oneLine`
-      Extract  a sentence stating the Question from the user input:
+      Extract a sentence stating the Question from the user input. Always in the context of curly hair care.
     `}
 
     user input: """
@@ -157,7 +157,7 @@ export default async function handler(req: NextRequest) {
         You are a very enthusiastic curly hair expert who loves
         to help people! Given the following sections,
         answer the question using only that information,
-        outputted in markdown format. Always rewrite the content when answering. If you are unsure and the answer
+        outputted in markdown format. Structure your reply as a how-to article. Always rewrite the content when answering. If you are unsure and the answer
         is not explicitly written in the documentation, say
         "Sorry, I don't know how to help with that."
       `}
@@ -166,7 +166,7 @@ export default async function handler(req: NextRequest) {
       ${contextText}
 
       Question: """
-      ${sanitizedQuery}
+      ${question}
       """
 
       Answer as markdown:
