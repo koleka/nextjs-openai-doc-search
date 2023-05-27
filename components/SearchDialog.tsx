@@ -245,7 +245,7 @@ export function SearchDialog() {
                   <h3 className="font-semibold">Answer:</h3>
                   
                 </div>
-                <ReactMarkdown children={answer}></ReactMarkdown>
+                <ReactMarkdown>{answer}</ReactMarkdown>
                 </div>
               ) : null}
 
